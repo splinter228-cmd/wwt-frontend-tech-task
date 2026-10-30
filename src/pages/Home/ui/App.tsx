@@ -5,17 +5,30 @@ import { useQuery } from '@tanstack/react-query'
 
 import { type FilterItem, FilterType } from '../../../shared/api/types/Filter'
 import type { SearchRequestFilter } from '../../../shared/api/types/SearchRequest/SearchRequestFilter'
+import { useFilterStore } from '../../../shared/store/filterStore'
 import filterData from '../../../shared/temp/filterData.json'
 
 export const App = () => {
 	const [draft, setDraft] = useState<SearchRequestFilter>([])
 	const { t } = useTranslation('filter')
 	const [isOpen, setIsOpen] = useState(false)
+	const selectedFilters = useFilterStore(state => state.selectedFilters)
+	const setSelectedFilters = useFilterStore(state => state.setSelectedFilters)
 
 	const { data } = useQuery({
 		queryKey: ['filters'],
 		queryFn: async () => filterData.filterItems as unknown as FilterItem[]
 	})
+
+	const openModal = () => {
+		setDraft(selectedFilters)
+		setIsOpen(true)
+	}
+
+	const applyFilters = () => {
+		setSelectedFilters(draft)
+		setIsOpen(false)
+	}
 
 	const toggleOption = (groupId: string, optionId: string) => {
 		setDraft(prev => {
@@ -45,7 +58,7 @@ export const App = () => {
 	return (
 		<section className="w-full min-h-dvh p-8">
 			<button
-				onClick={() => setIsOpen(true)}
+				onClick={openModal}
 				className="bg-blue-600 text-white px-4 py-2 rounded"
 			>
 				{t('openFilters')}
@@ -82,7 +95,14 @@ export const App = () => {
 								</fieldset>
 							))}
 						</form>
-						<div className="mt-4">
+						<div className="mt-4 flex gap-2">
+							<button
+								type="button"
+								onClick={applyFilters}
+								className="bg-blue-600 text-white px-4 py-2 rounded"
+							>
+								{t('apply')}
+							</button>
 							<button
 								type="button"
 								onClick={() => setIsOpen(false)}
@@ -94,6 +114,10 @@ export const App = () => {
 					</div>
 				</div>
 			)}
+
+			<pre className="mt-6 bg-gray-900 text-green-400 p-4 rounded text-sm">
+				{JSON.stringify(selectedFilters, null, 2)}
+			</pre>
 		</section>
 	)
 }
