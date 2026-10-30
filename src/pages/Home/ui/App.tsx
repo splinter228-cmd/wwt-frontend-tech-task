@@ -14,6 +14,7 @@ export const App = () => {
 	const [isOpen, setIsOpen] = useState(false)
 	const selectedFilters = useFilterStore(state => state.selectedFilters)
 	const setSelectedFilters = useFilterStore(state => state.setSelectedFilters)
+	const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
 	const { data } = useQuery({
 		queryKey: ['filters'],
@@ -25,8 +26,14 @@ export const App = () => {
 		setIsOpen(true)
 	}
 
-	const applyFilters = () => {
+	const confirmApply = () => {
 		setSelectedFilters(draft)
+		setIsConfirmOpen(false)
+		setIsOpen(false)
+	}
+
+	const cancelApply = () => {
+		setIsConfirmOpen(false)
 		setIsOpen(false)
 	}
 
@@ -98,7 +105,7 @@ export const App = () => {
 						<div className="mt-4 flex gap-2">
 							<button
 								type="button"
-								onClick={applyFilters}
+								onClick={() => setIsConfirmOpen(true)}
 								className="bg-blue-600 text-white px-4 py-2 rounded"
 							>
 								{t('apply')}
@@ -109,6 +116,30 @@ export const App = () => {
 								className="bg-gray-300 px-4 py-2 rounded"
 							>
 								{t('close')}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{isConfirmOpen && (
+				<div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+					<div className="bg-white p-6 rounded-lg w-80">
+						<p className="mb-4">{t('confirmQuestion')}</p>
+						<div className="flex gap-2">
+							<button
+								type="button"
+								onClick={cancelApply}
+								className="border px-4 py-2 rounded"
+							>
+								{t('useOldFilter')}
+							</button>
+							<button
+								type="button"
+								onClick={confirmApply}
+								className="bg-orange-500 text-white px-4 py-2 rounded"
+							>
+								{t('applyNewFilter')}
 							</button>
 						</div>
 					</div>

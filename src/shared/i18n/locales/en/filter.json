@@ -2,5 +2,8 @@
 	"openFilters": "Open Filters",
 	"title": "Filter",
 	"apply": "Apply",
-	"close": "Close"
+	"close": "Close",
+    "confirmQuestion": "Do you want to apply new filter",
+	"applyNewFilter": "Apply new filter",
+	"useOldFilter": "Use old filter"
 }
