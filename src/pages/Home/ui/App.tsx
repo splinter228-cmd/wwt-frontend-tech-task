@@ -3,10 +3,12 @@ import { useTranslation } from 'react-i18next'
 
 import { useQuery } from '@tanstack/react-query'
 
-import type { FilterItem } from '../../../shared/api/types/Filter'
+import { type FilterItem, FilterType } from '../../../shared/api/types/Filter'
+import type { SearchRequestFilter } from '../../../shared/api/types/SearchRequest/SearchRequestFilter'
 import filterData from '../../../shared/temp/filterData.json'
 
 export const App = () => {
+	const [draft, setDraft] = useState<SearchRequestFilter>([])
 	const { t } = useTranslation('filter')
 	const [isOpen, setIsOpen] = useState(false)
 
@@ -14,6 +16,31 @@ export const App = () => {
 		queryKey: ['filters'],
 		queryFn: async () => filterData.filterItems as unknown as FilterItem[]
 	})
+
+	const toggleOption = (groupId: string, optionId: string) => {
+		setDraft(prev => {
+			const currentGroup = prev.find(group => group.id === groupId)
+
+			if (!currentGroup) {
+				return [
+					...prev,
+					{ id: groupId, type: FilterType.OPTION, optionsIds: [optionId] }
+				]
+			}
+
+			const newOptionsIds = currentGroup.optionsIds.includes(optionId)
+				? currentGroup.optionsIds.filter(id => id !== optionId)
+				: [...currentGroup.optionsIds, optionId]
+
+			if (newOptionsIds.length === 0) {
+				return prev.filter(group => group.id !== groupId)
+			}
+
+			return prev.map(group =>
+				group.id === groupId ? { ...group, optionsIds: newOptionsIds } : group
+			)
+		})
+	}
 
 	return (
 		<section className="w-full min-h-dvh p-8">
@@ -40,7 +67,15 @@ export const App = () => {
 											key={option.id}
 											className="flex items-center gap-2"
 										>
-											<input type="checkbox" />
+											<input
+												type="checkbox"
+												checked={
+													draft
+														.find(group => group.id === item.id)
+														?.optionsIds.includes(option.id) ?? false
+												}
+												onChange={() => toggleOption(item.id, option.id)}
+											/>
 											{option.name}
 										</label>
 									))}
