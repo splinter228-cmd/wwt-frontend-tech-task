@@ -26,6 +26,8 @@ export const App = () => {
 		setIsOpen(true)
 	}
 
+	const clearAll = () => setDraft([])
+
 	const confirmApply = () => {
 		setSelectedFilters(draft)
 		setIsConfirmOpen(false)
@@ -102,7 +104,7 @@ export const App = () => {
 								</fieldset>
 							))}
 						</form>
-						<div className="mt-4 flex gap-2">
+						<div className="mt-4 flex gap-2 items-center">
 							<button
 								type="button"
 								onClick={() => setIsConfirmOpen(true)}
@@ -116,6 +118,13 @@ export const App = () => {
 								className="bg-gray-300 px-4 py-2 rounded"
 							>
 								{t('close')}
+							</button>
+							<button
+								type="button"
+								onClick={clearAll}
+								className="ml-auto underline text-sm"
+							>
+								{t('clearAll')}
 							</button>
 						</div>
 					</div>
