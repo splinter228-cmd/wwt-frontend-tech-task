@@ -3,8 +3,8 @@
 	"title": "Filter",
 	"apply": "Apply",
 	"close": "Close",
-    "confirmQuestion": "Do you want to apply new filter",
+	"confirmQuestion": "Do you want to apply new filter",
 	"applyNewFilter": "Apply new filter",
 	"useOldFilter": "Use old filter",
-    "clearAll": "Clear all parameters"
+	"clearAll": "Clear all parameters"
 }
